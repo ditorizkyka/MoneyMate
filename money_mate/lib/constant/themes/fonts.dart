@@ -15,7 +15,7 @@ class TypographyApp {
     fontFamily: GoogleFonts.rubik().fontFamily,
     fontSize: ScreenUtil().setSp(24),
     fontWeight: FontWeight.w700,
-    color: ColorApp.darkGreen,
+    color: ColorApp.mainColor,
   );
 
   static TextStyle mdblack = TextStyle(
@@ -29,7 +29,7 @@ class TypographyApp {
     fontFamily: GoogleFonts.rubik().fontFamily,
     fontSize: ScreenUtil().setSp(14),
     fontWeight: FontWeight.w400,
-    color: ColorApp.darkGreen,
+    color: ColorApp.mainColor,
   );
 
   static TextStyle text2 = TextStyle(

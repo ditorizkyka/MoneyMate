@@ -3,5 +3,5 @@ flutter_native_splash:
   ios : true
   web: false
 
-  color : "#267F60"
+  color : "#135ae1"
   image : "assets/icons/moneymate.png"

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'package:money_mate/app/widget/buttonApp.dart';
 import 'package:money_mate/constant/constant.dart';
 
 import '../controllers/addcontent_controller.dart';
@@ -11,12 +12,17 @@ class AddcontentView extends GetView<AddcontentController> {
   @override
   Widget build(BuildContext context) {
     final AddcontentController controller = Get.put(AddcontentController());
+    final TextEditingController nameAction = TextEditingController();
+    final TextEditingController costController = TextEditingController();
+    final TextEditingController descActionController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
           "Add Action",
+          style: TypographyApp.titleField,
         ),
       ),
       backgroundColor: ColorApp.primaryGrey,
@@ -43,9 +49,32 @@ class AddcontentView extends GetView<AddcontentController> {
                             "Seluruh kebutuhan keuangan anda disimpan dalam database kami, anda bisa melihat report dan statistik jingan ingin!",
                             style: TypographyApp.desc),
                         Gap.h24,
-                        addActionTextField(),
+                        AddActionTextField(
+                          controller: nameAction,
+                          title: "Nama Kegiatan",
+                        ),
                         Gap.h12,
-                        addActionTextField(),
+                        Obx(
+                          () => DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              // labelText: "Jenis Pengeluaran",
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            value: controller.selectedExpense.value,
+                            items: controller.expenses.map((String expense) {
+                              return DropdownMenuItem<String>(
+                                value: expense,
+                                child: Text(expense),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                controller.setSelectedExpense(newValue);
+                              }
+                            },
+                          ),
+                        ),
                         Gap.h12,
                         Text("Tanggal"),
                         Gap.h8,
@@ -101,9 +130,9 @@ class AddcontentView extends GetView<AddcontentController> {
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       border:
-                                          Border.all(color: ColorApp.darkGreen),
+                                          Border.all(color: ColorApp.mainColor),
                                       color: controller.priority.value == 1
-                                          ? ColorApp.darkGreen
+                                          ? ColorApp.mainColor
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -133,9 +162,9 @@ class AddcontentView extends GetView<AddcontentController> {
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       border:
-                                          Border.all(color: ColorApp.darkGreen),
+                                          Border.all(color: ColorApp.mainColor),
                                       color: controller.priority.value == 2
-                                          ? ColorApp.darkGreen
+                                          ? ColorApp.mainColor
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -182,6 +211,8 @@ class AddcontentView extends GetView<AddcontentController> {
                           Gap.w12,
                           Expanded(
                             child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: costController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 // labelText: "Masukan nama",
@@ -198,6 +229,7 @@ class AddcontentView extends GetView<AddcontentController> {
                         Text("Deskripsi"),
                         Gap.h8,
                         TextField(
+                          controller: descActionController,
                           maxLines: 5,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
@@ -205,7 +237,21 @@ class AddcontentView extends GetView<AddcontentController> {
                           ),
                         ),
                         Gap.h28,
-                        ButtonApp()
+                        ButtonApp(
+                          action: "Simpan",
+                          onTap: () {
+                            controller.addData(
+                              nameAction.text,
+                              controller.selectedExpense.value,
+                              controller.selectedDate.value,
+                              controller.priority.value,
+                              costController.text,
+                              descActionController.text,
+                            );
+
+                            controller.updateCost(costController.text);
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -240,34 +286,12 @@ class AddcontentView extends GetView<AddcontentController> {
   }
 }
 
-class ButtonApp extends StatelessWidget {
-  const ButtonApp({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Container(
-        alignment: AlignmentDirectional.centerStart,
-        width: double.infinity,
-        padding: EdgeInsets.all(13),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorApp.darkGreen),
-        child: Center(
-          child: Text(
-            "Post Activity",
-            style: TypographyApp.buttonText,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ignore: camel_case_types
-class addActionTextField extends StatelessWidget {
-  const addActionTextField({
+class AddActionTextField extends StatelessWidget {
+  final String title;
+  final TextEditingController controller;
+  const AddActionTextField({
+    required this.title,
+    required this.controller,
     super.key,
   });
 
@@ -278,12 +302,15 @@ class addActionTextField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Nama kegiatan"),
+          Text(title),
           Gap.h8,
           TextField(
+            controller: controller,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(12),
-              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.all(16),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              hintText: title,
               // labelText: "Masukan nama",
             ),
           )

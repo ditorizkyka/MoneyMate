@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// [INFO]
 /// Constant for colors to be used in the app with following the design system
 class ColorApp {
-  static const Color darkGreen = Color(0xFF267f60);
+  static const Color mainColor = Color(0xFF135ae1);
   static const Color lightGreen = Color(0xFFa9c5bb);
 
   static const Color white = Color(0xFFFFFFFF);

@@ -10,6 +10,8 @@ abstract class Routes {
   static const ADDCONTENT = _Paths.ADDCONTENT;
   static const DETAILCONTENT = _Paths.DETAILCONTENT;
   static const DASHBOARD = _Paths.DASHBOARD;
+  static const EDITPROFILE = _Paths.EDITPROFILE;
+  static const EXCHANGE = _Paths.EXCHANGE;
 }
 
 abstract class _Paths {
@@ -21,4 +23,6 @@ abstract class _Paths {
   static const ADDCONTENT = '/addcontent';
   static const DETAILCONTENT = '/detailcontent';
   static const DASHBOARD = '/dashboard';
+  static const EDITPROFILE = '/editprofile';
+  static const EXCHANGE = '/exchange';
 }

@@ -1,7 +1,9 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:money_mate/app/modules/home/views/home_view.dart';
 import 'package:money_mate/constant/constant.dart';
 
 import '../controllers/detailcontent_controller.dart';
@@ -10,6 +12,8 @@ class DetailcontentView extends GetView<DetailcontentController> {
   const DetailcontentView({super.key});
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => DetailcontentController());
+    controller.fetchActivities();
     return Scaffold(
         backgroundColor: ColorApp.white,
         appBar: AppBar(
@@ -22,14 +26,14 @@ class DetailcontentView extends GetView<DetailcontentController> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Tambahkan kebutuhan anda!",
-                    style: TypographyApp.headline1),
+                Text("Lacak Pengeluaran anda!", style: TypographyApp.headline1),
                 Gap.h8,
                 Text(
-                    "Seluruh kebutuhan keuangan anda disimpan dalam database kami, anda bisa melihat report dan statistik jingan ingin!",
+                    "Statistik data dibawah dan beberapa detail pengeluaran anda dapat membantu anda menentukan prioritas pengeluaran anda",
                     style: TypographyApp.desc),
                 Gap.h24,
                 Container(
@@ -45,172 +49,141 @@ class DetailcontentView extends GetView<DetailcontentController> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Spent Overview",
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
-                              ),
-                              SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Text(
-                                    "\$10,576.00",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "10%",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Icon(Icons.arrow_upward,
-                                      color: Colors.green, size: 16),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                Text("January",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Icon(Icons.arrow_drop_down, size: 20),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceBetween,
-                          maxY: 7000,
-                          barTouchData: BarTouchData(enabled: false),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false)),
-                            rightTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false)),
-                            topTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false)),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) {
-                                  switch (value.toInt()) {
-                                    case 0:
-                                      return _buildLabel(
-                                          "Investment", Colors.blue);
-                                    case 1:
-                                      return _buildLabel(
-                                          "Entertainment", Colors.teal);
-                                    case 2:
-                                      return _buildLabel(
-                                          "Food & Beverages", Colors.green);
-                                    default:
-                                      return SizedBox();
-                                  }
-                                },
-                                reservedSize: 32,
-                              ),
-                            ),
-                          ),
-                          gridData: FlGridData(show: false),
-                          borderData: FlBorderData(show: false),
-                          barGroups: [
-                            _buildBarGroup(0, 6345.60, Colors.blue),
-                            _buildBarGroup(1, 3172.80, Colors.teal),
-                            _buildBarGroup(2, 1057.60, Colors.green),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  // height: 20,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(7),
-                      // border: Border.all(),
-                      color: ColorApp.white),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(60),
-                          color: ColorApp.white,
-                        ),
-                        child: Icon(
-                          Icons.shopping_bag_outlined,
-                          color: ColorApp.darkGreen,
-                          size: 20,
-                        ),
-                      ),
-                      Gap.w12,
-                      Expanded(
-                        child: Column(
+                  child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        }
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Headset earphone baseus",
-                              style: TypographyApp.mdblack.copyWith(
-                                fontSize: 15,
-                              ),
-                            ),
-                            Gap.h4,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "Date : 2022-01-01",
-                                  style: TypographyApp.desc,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Spent Overview",
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.grey),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Rp.${snapshot.data!['cost']}",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                          maxLines: 1, // Maksimum hanya 1 baris
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          "10%",
+                                          style: TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Icon(Icons.arrow_upward,
+                                            color: Colors.green, size: 16),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                Gap.w12,
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 1),
+                                      horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
+                                    color: Colors.grey[200],
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.red,
                                   ),
-                                  child: Text(
-                                    "Urgent",
-                                    style: TextStyle(color: Colors.white),
+                                  child: Row(
+                                    children: [
+                                      Text("January",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      Icon(Icons.arrow_drop_down, size: 20),
+                                    ],
                                   ),
-                                )
+                                ),
                               ],
+                            ),
+                            SizedBox(height: 16),
+                            // Investment
+                            Obx(
+                              () => Column(
+                                children: [
+                                  _buildCategory(
+                                      "Barang",
+                                      controller.totalBarang.value / 10576,
+                                      Colors.blue,
+                                      "\$${controller.totalBarang.value}"),
+                                  SizedBox(height: 8),
+
+                                  // Entertainment
+                                  _buildCategory(
+                                      "Pendidikan",
+                                      controller.totalPendidikan.value / 10576,
+                                      Colors.teal,
+                                      "\$${controller.totalPendidikan.value}"),
+                                  SizedBox(height: 8),
+
+                                  // Food & Beverages
+                                  _buildCategory(
+                                      "Travel",
+                                      controller.totalTravel.value / 10576,
+                                      Colors.green,
+                                      "\$${controller.totalTravel.value}"),
+                                ],
+                              ),
                             )
                           ],
-                        ),
-                      ),
-                      Gap.h12,
-                    ],
-                  ),
+                        );
+                      }),
+                ),
+                Gap.h20,
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Recent Full Activity",
+                        style: TypographyApp.mdblack)),
+                Gap.h12,
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection('activity')
+                      .orderBy('cost', descending: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                          child:
+                              CircularProgressIndicator()); // Tampilkan loading dulu
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return SizedBox(
+                        height: 200,
+                        child: Center(child: Text('Data not found')),
+                      ); // Jika tidak ada data
+                    }
+                    return Column(
+                      children: snapshot.data!.docs.map((doc) {
+                        return RecentActivityWidget(
+                          name: doc['name'],
+                          type: doc['type'],
+                          date: doc['date'],
+                          priority: doc['priority'],
+                        );
+                      }).toList(),
+                    );
+                  },
                 )
               ],
             ),
@@ -218,26 +191,39 @@ class DetailcontentView extends GetView<DetailcontentController> {
         ));
   }
 
-  BarChartGroupData _buildBarGroup(int x, double y, Color color) {
-    return BarChartGroupData(
-      x: x,
-      barRods: [
-        BarChartRodData(
-          toY: y,
+  Widget _buildCategory(
+      String title, double percentage, Color color, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.circle, color: color, size: 10),
+                SizedBox(width: 6),
+                Text(title, style: TextStyle(fontSize: 14)),
+              ],
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1, // Maksimum hanya 1 baris
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        LinearProgressIndicator(
+          value: percentage,
+          backgroundColor: Colors.grey[300],
           color: color,
-          width: 20,
+          minHeight: 10,
           borderRadius: BorderRadius.circular(5),
         ),
-      ],
-    );
-  }
-
-  Widget _buildLabel(String text, Color color) {
-    return Row(
-      children: [
-        Container(width: 10, height: 10, color: color),
-        SizedBox(width: 4),
-        Text(text, style: TextStyle(fontSize: 12)),
       ],
     );
   }
