@@ -1,11 +1,27 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
+import 'package:hive_flutter/adapters.dart';
+import 'package:money_mate/app/data/model/user.dart';
+import 'package:money_mate/app/shared/constanta.dart';
+
 import 'app/routes/app_pages.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // var appDocumentDirectory = await getApplicationDocumentsDirectory();
+  // Hive.init(appDocumentDirectory.path);
+  await Hive.initFlutter();
+  Hive.registerAdapter(UserModelAdapter());
+  box = await Hive.openBox('userBox');
+
+  bool isLoggedIn = box.get('isLoggedIn', defaultValue: false);
+
+  var initialRoute = isLoggedIn ? '/dashboard' : '/signin';
   runApp(
     ScreenUtilInit(
       designSize: const Size(360, 690),
@@ -13,7 +29,7 @@ void main() {
       splitScreenMode: true,
       builder: (context, child) => GetMaterialApp(
         title: "Application",
-        initialRoute: AppPages.INITIAL,
+        initialRoute: initialRoute,
         getPages: AppPages.routes,
       ),
     ),

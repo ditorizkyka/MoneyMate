@@ -38,7 +38,7 @@ class DashboardView extends GetView<DashboardController> {
               elevation: 0,
               currentIndex: dashboardController.selectedIndex.value,
               onTap: (index) => dashboardController.changeIndex(index),
-              selectedItemColor: ColorApp.darkGreen, // Warna saat dipilih
+              selectedItemColor: ColorApp.mainColor, // Warna saat dipilih
               unselectedItemColor: Colors.white60, // Warna saat tidak dipilih
               showSelectedLabels: false,
               showUnselectedLabels: false,
@@ -46,7 +46,7 @@ class DashboardView extends GetView<DashboardController> {
               items: [
                 _buildNavItem(Icons.home_outlined, Icons.home, "Home", 0,
                     dashboardController),
-                _buildNavItem(Icons.query_stats_outlined, Icons.search,
+                _buildNavItem(Icons.query_stats_outlined, Icons.query_stats,
                     "Detail", 1, dashboardController),
                 _buildNavItem(Icons.add_circle_outline, Icons.add_circle, "Add",
                     2, dashboardController),
@@ -74,7 +74,7 @@ class DashboardView extends GetView<DashboardController> {
                     : outlinedIcon,
                 size: 30,
                 color: controller.selectedIndex.value == index
-                    ? ColorApp.darkGreen // Warna saat dipilih
+                    ? ColorApp.mainColor // Warna saat dipilih
                     : Colors.grey, // Warna saat tidak dipilih
               ),
               Gap.h4, // Jarak antara icon & label
@@ -84,11 +84,11 @@ class DashboardView extends GetView<DashboardController> {
                   fontSize: 12,
 
                   color: controller.selectedIndex.value == index
-                      ? ColorApp.darkGreen // Warna saat dipilih
+                      ? ColorApp.mainColor // Warna saat dipilih
                       : Colors.grey, // Warna saat tidak dipilih
                 ),
               ),
-              Gap.h8
+              // Gap.h8
             ],
           )),
       label: "",

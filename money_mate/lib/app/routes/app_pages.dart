@@ -6,6 +6,10 @@ import '../modules/dashboard/bindings/dashboard_binding.dart';
 import '../modules/dashboard/views/dashboard_view.dart';
 import '../modules/detailcontent/bindings/detailcontent_binding.dart';
 import '../modules/detailcontent/views/detailcontent_view.dart';
+import '../modules/editprofile/bindings/editprofile_binding.dart';
+import '../modules/editprofile/views/editprofile_view.dart';
+import '../modules/exchange/bindings/exchange_binding.dart';
+import '../modules/exchange/views/exchange_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -57,6 +61,16 @@ class AppPages {
       name: _Paths.DASHBOARD,
       page: () => const DashboardView(),
       binding: DashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDITPROFILE,
+      page: () => const EditprofileView(),
+      binding: EditprofileBinding(),
+    ),
+    GetPage(
+      name: _Paths.EXCHANGE,
+      page: () => const ExchangeView(),
+      binding: ExchangeBinding(),
     ),
   ];
 }
