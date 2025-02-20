@@ -25,7 +25,7 @@ class SignupView extends GetView<SignupController> {
               children: [
                 Image.asset(
                   "assets/images/lastlogo-bg.png",
-                  width: 40,
+                  width: 60,
                 ),
                 Gap.h12,
                 Text(
@@ -50,6 +50,7 @@ class SignupView extends GetView<SignupController> {
                 Gap.h12,
                 AuthTextField(
                   title: "Password",
+                  isObsecure: true,
                   controller: passwordController,
                 ),
                 Gap.h12,
@@ -63,37 +64,6 @@ class SignupView extends GetView<SignupController> {
                         password: passwordController.text,
                       );
                     }),
-                Gap.h12,
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    alignment: AlignmentDirectional.centerStart,
-                    width: double.infinity,
-                    padding: EdgeInsets.all(13),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: ColorApp.mainColor),
-                        borderRadius: BorderRadius.circular(10),
-                        color: ColorApp.white),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/icons/google.png",
-                            width: 30,
-                          ),
-                          Gap.w12,
-                          Text(
-                            "Sign-In with Google",
-                            style: TypographyApp.buttonText.copyWith(
-                              color: ColorApp.mainColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
                 Gap.h12,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -116,33 +116,32 @@ class DetailcontentView extends GetView<DetailcontentController> {
                             ),
                             SizedBox(height: 16),
                             // Investment
-                            Obx(
-                              () => Column(
-                                children: [
-                                  _buildCategory(
-                                      "Barang",
-                                      controller.totalBarang.value / 10576,
-                                      Colors.blue,
-                                      "\$${controller.totalBarang.value}"),
-                                  SizedBox(height: 8),
 
-                                  // Entertainment
-                                  _buildCategory(
-                                      "Pendidikan",
-                                      controller.totalPendidikan.value / 10576,
-                                      Colors.teal,
-                                      "\$${controller.totalPendidikan.value}"),
-                                  SizedBox(height: 8),
+                            Column(
+                              children: [
+                                _buildCategory(
+                                    "Barang",
+                                    controller.totalBarang.value / 10576,
+                                    Colors.blue,
+                                    "\$${controller.totalBarang.value}"),
+                                SizedBox(height: 8),
 
-                                  // Food & Beverages
-                                  _buildCategory(
-                                      "Travel",
-                                      controller.totalTravel.value / 10576,
-                                      Colors.green,
-                                      "\$${controller.totalTravel.value}"),
-                                ],
-                              ),
-                            )
+                                // Entertainment
+                                _buildCategory(
+                                    "Pendidikan",
+                                    controller.totalPendidikan.value / 10576,
+                                    Colors.teal,
+                                    "\$${controller.totalPendidikan.value}"),
+                                SizedBox(height: 8),
+
+                                // Food & Beverages
+                                _buildCategory(
+                                    "Travel",
+                                    controller.totalTravel.value / 10576,
+                                    Colors.green,
+                                    "\$${controller.totalTravel.value}"),
+                              ],
+                            ),
                           ],
                         );
                       }),

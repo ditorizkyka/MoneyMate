@@ -1,12 +1,17 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:money_mate/constant/constant.dart';
 
 class AuthTextField extends StatelessWidget {
   final String title;
   final TextEditingController controller;
+  final bool? isObsecure;
+
   const AuthTextField({
     required this.title,
     required this.controller,
+    this.isObsecure,
     super.key,
   });
 
@@ -20,6 +25,7 @@ class AuthTextField extends StatelessWidget {
           Text(title),
           Gap.h8,
           TextField(
+            obscureText: isObsecure ?? false,
             controller: controller,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),

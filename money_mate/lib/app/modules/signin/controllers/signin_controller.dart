@@ -37,16 +37,11 @@ class SigninController extends GetxController {
         msg = "No user found for that email.";
       } else if (e.code == 'wrong-password') {
         msg = "Wrong password provided for that user.";
+      } else {
+        msg = "Error occured, Please fill or check your email and password";
       }
-      Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      Get.snackbar("Error occured", "Error occured $msg",
+          backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 }

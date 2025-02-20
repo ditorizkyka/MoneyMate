@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ void main() async {
   box = await Hive.openBox('userBox');
 
   bool isLoggedIn = box.get('isLoggedIn', defaultValue: false);
-
+  await dotenv.load(fileName: "assets/config/.env");
   var initialRoute = isLoggedIn ? '/dashboard' : '/signin';
   runApp(
     ScreenUtilInit(
@@ -28,6 +29,7 @@ void main() async {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "Application",
         initialRoute: initialRoute,
         getPages: AppPages.routes,

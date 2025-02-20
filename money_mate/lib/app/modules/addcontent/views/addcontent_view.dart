@@ -240,16 +240,49 @@ class AddcontentView extends GetView<AddcontentController> {
                         ButtonApp(
                           action: "Simpan",
                           onTap: () {
-                            controller.addData(
-                              nameAction.text,
-                              controller.selectedExpense.value,
-                              controller.selectedDate.value,
-                              controller.priority.value,
-                              costController.text,
-                              descActionController.text,
-                            );
+                            if (nameAction.text.isEmpty &&
+                                costController.text.isEmpty &&
+                                descActionController.text.isEmpty) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return InformationDialog(
+                                    nameAction: "Error!",
+                                    desc:
+                                        "Isi semua yang diperlukan dengan benar dan pastikan seluruhnya sudah benar",
+                                    title: "Tutup",
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                            } else {
+                              controller.addData(
+                                nameAction.text,
+                                controller.selectedExpense.value,
+                                controller.selectedDate.value,
+                                controller.priority.value,
+                                costController.text,
+                                descActionController.text,
+                              );
 
-                            controller.updateCost(costController.text);
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return InformationDialog(
+                                    nameAction: "Success!",
+                                    desc:
+                                        "Berhasil menambahkan data anda! Terus percayakan pengeluaran mu dengan Moeny Mate ",
+                                    title: "Tutup",
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                              controller.updateCost(costController.text);
+                            }
                           },
                         )
                       ],
@@ -283,6 +316,49 @@ class AddcontentView extends GetView<AddcontentController> {
       dateController.selectedDate.value =
           "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
     }
+  }
+}
+
+class InformationDialog extends StatelessWidget {
+  const InformationDialog({
+    super.key,
+    required this.nameAction,
+    required this.desc,
+    required this.title,
+    required this.onTap,
+  });
+
+  final String nameAction;
+  final String desc;
+  final String title;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      shadowColor: Colors.white,
+      title: Text(nameAction, style: TypographyApp.mdblack),
+      content: Text(
+        desc,
+      ),
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            backgroundColor: ColorApp.mainColor,
+          ),
+          onPressed: onTap,
+          child: Text(title,
+              style: TypographyApp.mdblack.copyWith(color: Colors.white)),
+        ),
+      ],
+    );
   }
 }
 
