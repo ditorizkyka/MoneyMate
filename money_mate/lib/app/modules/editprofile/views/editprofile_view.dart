@@ -128,50 +128,45 @@ class EditprofileView extends GetView<EditprofileController> {
                   ButtonApp(
                       action: "Update",
                       onTap: () {
-                        controller.updateUser(
-                          FirebaseAuth.instance.currentUser!.uid,
-                          nameController.text,
-                        );
+                        if (nameController.text.isEmpty) {
+                          Get.snackbar("Error", "Please enter your name");
+                          return;
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ConfirmDialog(
+                                  title: "Update Account",
+                                  message:
+                                      "Are you sure you want to update your account? if you delete it, you will never get it comeback",
+                                  confirmBtn: "Update",
+                                  nextEvent: () async {
+                                    await controller.updateUser(
+                                      FirebaseAuth.instance.currentUser!.uid,
+                                      nameController.text,
+                                    );
+                                    Navigator.pop(context);
+                                  });
+                            },
+                          );
+                        }
                       }),
                   Gap.h12,
                   GestureDetector(
-                    onDoubleTap: () {
+                    onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            shadowColor: Colors.white,
-                            title: Text("Delete Account",
-                                style: TypographyApp.mdblack),
-                            content: Text(
-                                "Are you sure want to delete this account?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child:
-                                    Text("Back", style: TypographyApp.mdblack),
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: ColorApp.mainColor,
-                                ),
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                  await controller.deleteUser();
-                                  Get.offAllNamed('/signin');
-                                },
-                                child: Text("Confirm",
-                                    style: TypographyApp.buttonText
-                                        .copyWith(color: Colors.white)),
-                              ),
-                            ],
+                          return ConfirmDialog(
+                            title: "Delete Account",
+                            message:
+                                " Are you sure you want to delete your account? if you delete it, you will never get it comeback",
+                            confirmBtn: "Delete",
+                            nextEvent: () async {
+                              Navigator.pop(context);
+                              await controller.deleteUser();
+                              Get.offAllNamed('/signin');
+                            },
                           );
                         },
                       );
@@ -212,5 +207,52 @@ class EditprofileView extends GetView<EditprofileController> {
             )
           ],
         )));
+  }
+}
+
+class ConfirmDialog extends StatelessWidget {
+  const ConfirmDialog({
+    super.key,
+    required this.title,
+    required this.message,
+    required this.confirmBtn,
+    this.nextEvent,
+  });
+
+  final String title;
+  final String message;
+  final String confirmBtn;
+  final VoidCallback? nextEvent;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      shadowColor: Colors.white,
+      title: Text(title, style: TypographyApp.mdblack),
+      content: Text(
+        message,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Back", style: TypographyApp.mdblack),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            backgroundColor: ColorApp.mainColor,
+          ),
+          onPressed: nextEvent,
+          child: Text(confirmBtn,
+              style: TypographyApp.buttonText.copyWith(color: Colors.white)),
+        ),
+      ],
+    );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:money_mate/app/modules/addcontent/views/addcontent_view.dart';
 import 'package:money_mate/app/modules/dashboard/controllers/dashboard_controller.dart';
 
 class Authservices {
@@ -37,16 +38,11 @@ class Authservices {
         msg = "The password provided is too weak.";
       } else if (e.code == 'email-already-in-use') {
         msg = "The account already exists for that email.";
+      } else {
+        msg = "Error occured, Please fill or check it later";
       }
-      Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      Get.snackbar("Error occured", "Error occured $msg",
+          backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 
@@ -65,6 +61,7 @@ class Authservices {
 
       final box = await Hive.openBox('userBox');
       await box.put('isLoggedIn', true);
+
       Get.offAllNamed('/dashboard');
     } on FirebaseAuthException catch (e) {
       String msg = '';
