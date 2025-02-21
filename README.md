@@ -28,6 +28,3 @@ Money Mate adalah sebuah aplikasi yang digunakan untuk melakukan pencatatan peng
   ## DOKUMENTASI
   
 ![Money Mate](https://github.com/user-attachments/assets/72e3437e-1ede-4317-9dc4-5fc581fea83c)
-
-  https://drive.google.com/file/d/1rbWXhAupOpGsXyKqAn1eIijipwuDBSaK/view?usp=sharing
-https://drive.google.com/file/d/1rbWXhAupOpGsXyKqAn1eIijipwuDBSaK/view?usp=sharing
