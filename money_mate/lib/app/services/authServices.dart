@@ -13,11 +13,11 @@ class Authservices {
 
   // for authentication
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  Future<void> signup({
-    required String email,
-    required String password,
-    required String fullname,
-  }) async {
+  Future<void> signup(
+      {required String email,
+      required String password,
+      required String fullname,
+      required int limit}) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -28,7 +28,8 @@ class Authservices {
         "name": fullname,
         "email": email,
         "uid": credential.user!.uid,
-        "cost": 0
+        "cost": 0,
+        "limit": limit,
       });
 
       Get.offAllNamed('/signin');

@@ -267,6 +267,11 @@ class AddcontentView extends GetView<AddcontentController> {
                                 descActionController.text,
                               );
 
+                              controller.updateDetailCost(
+                                controller.selectedExpense.value,
+                                int.parse(costController.text),
+                              );
+
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
