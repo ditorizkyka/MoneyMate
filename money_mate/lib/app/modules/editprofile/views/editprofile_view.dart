@@ -13,6 +13,7 @@ class EditprofileView extends GetView<EditprofileController> {
   @override
   Widget build(BuildContext context) {
     TextEditingController nameController = TextEditingController();
+    TextEditingController spentController = TextEditingController();
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -84,6 +85,7 @@ class EditprofileView extends GetView<EditprofileController> {
                 horizontal: 25,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Anda tidak bisa mengganti data lain selain nama panjang anda!",
@@ -94,6 +96,34 @@ class EditprofileView extends GetView<EditprofileController> {
                     controller: nameController,
                     decoration: InputDecoration(
                       labelText: 'Ganti nama',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  Gap.h12,
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text(
+                            "0",
+                            style:
+                                TypographyApp.desc.copyWith(color: Colors.grey),
+                          );
+                        }
+                        return Text(
+                          "Limit pengeluaran anda saat ini adalah ${snapshot.data!['limit']}",
+                          style: TypographyApp.desc.copyWith(color: Colors.red),
+                        );
+                      }),
+                  Gap.h12,
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: spentController,
+                    decoration: InputDecoration(
+                      labelText: 'Ubah batas pengeluaran',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -129,13 +159,66 @@ class EditprofileView extends GetView<EditprofileController> {
                       action: "Update",
                       onTap: () {
                         if (nameController.text.isEmpty) {
-                          Get.snackbar("Error", "Please enter your name");
-                          return;
+                          if (spentController.text.isEmpty) {
+                            Get.snackbar(
+                              "Error",
+                              "Please enter one field above",
+                            );
+                          } else if (int.parse(spentController.text) < 0) {
+                            Get.snackbar(
+                              "Error",
+                              "Spent limit cannot be negative",
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ConfirmDialog(
+                                    title: "Update Spent Limit",
+                                    message:
+                                        "Are you sure you want to update your limit?",
+                                    confirmBtn: "Update",
+                                    nextEvent: () async {
+                                      await controller.updateUser(
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                        nameController.text,
+                                        int.parse(spentController.text),
+                                      );
+                                      Navigator.pop(context);
+                                    });
+                              },
+                            );
+                          }
                         } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ConfirmDialog(
+                          if (spentController.text.isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ConfirmDialog(
+                                    title: "Update Account Name",
+                                    message:
+                                        "Are you sure you want to update your account? if you delete it, you will never get it comeback",
+                                    confirmBtn: "Update",
+                                    nextEvent: () async {
+                                      await controller.updateUser(
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                        nameController.text,
+                                        int.parse(spentController.text),
+                                      );
+                                      Navigator.pop(context);
+                                    });
+                              },
+                            );
+                          } else if (int.parse(spentController.text) < 0) {
+                            Get.snackbar(
+                              "Error",
+                              "Spent limit cannot be negative",
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ConfirmDialog(
                                   title: "Update Account",
                                   message:
                                       "Are you sure you want to update your account? if you delete it, you will never get it comeback",
@@ -144,11 +227,14 @@ class EditprofileView extends GetView<EditprofileController> {
                                     await controller.updateUser(
                                       FirebaseAuth.instance.currentUser!.uid,
                                       nameController.text,
+                                      int.parse(spentController.text),
                                     );
                                     Navigator.pop(context);
-                                  });
-                            },
-                          );
+                                  },
+                                );
+                              },
+                            );
+                          }
                         }
                       }),
                   Gap.h12,

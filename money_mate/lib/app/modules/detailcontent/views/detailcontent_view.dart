@@ -96,52 +96,64 @@ class DetailcontentView extends GetView<DetailcontentController> {
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text("January",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Icon(Icons.arrow_drop_down, size: 20),
-                                    ],
-                                  ),
-                                ),
+                                // Container(
+                                //   padding: EdgeInsets.symmetric(
+                                //       horizontal: 10, vertical: 5),
+                                //   decoration: BoxDecoration(
+                                //     color: Colors.grey[200],
+                                //     borderRadius: BorderRadius.circular(10),
+                                //   ),
+                                //   child: Row(
+                                //     children: [
+                                //       Text("January",
+                                //           style: TextStyle(
+                                //               fontWeight: FontWeight.bold)),
+                                //       Icon(Icons.arrow_drop_down, size: 20),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                             SizedBox(height: 16),
                             // Investment
 
-                            Column(
-                              children: [
-                                _buildCategory(
-                                    "Barang",
-                                    controller.totalBarang.value / 10576,
-                                    Colors.blue,
-                                    "\$${controller.totalBarang.value}"),
-                                SizedBox(height: 8),
+                            StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .collection('detailCost')
+                                    .doc('fixedDocument')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return CircularProgressIndicator();
+                                  }
+                                  return Column(
+                                    children: [
+                                      _buildCategory(
+                                          "Barang",
+                                          snapshot.data!['barang'] / 10576,
+                                          Colors.blue,
+                                          "\$${snapshot.data!['barang']}"),
+                                      SizedBox(height: 8),
 
-                                // Entertainment
-                                _buildCategory(
-                                    "Pendidikan",
-                                    controller.totalPendidikan.value / 10576,
-                                    Colors.teal,
-                                    "\$${controller.totalPendidikan.value}"),
-                                SizedBox(height: 8),
+                                      // Entertainment
+                                      _buildCategory(
+                                          "Pendidikan",
+                                          snapshot.data!['pendidikan'] / 10576,
+                                          Colors.teal,
+                                          "\$${snapshot.data!['pendidikan']}"),
+                                      SizedBox(height: 8),
 
-                                // Food & Beverages
-                                _buildCategory(
-                                    "Travel",
-                                    controller.totalTravel.value / 10576,
-                                    Colors.green,
-                                    "\$${controller.totalTravel.value}"),
-                              ],
-                            ),
+                                      // Food & Beverages
+                                      _buildCategory(
+                                          "Travel",
+                                          snapshot.data!['travel'] / 10576,
+                                          Colors.green,
+                                          "\$${snapshot.data!['travel']}"),
+                                    ],
+                                  );
+                                }),
                           ],
                         );
                       }),

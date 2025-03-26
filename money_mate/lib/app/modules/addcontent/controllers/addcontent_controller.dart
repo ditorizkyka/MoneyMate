@@ -35,6 +35,49 @@ class AddcontentController extends GetxController {
     }
   }
 
+  Future<void> updateDetailCost(String jenis, int cost) async {
+    try {
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      if (jenis == "Barang") {
+        await FirebaseFirestore.instance
+            .collection("users") // Ambil koleksi users
+            .doc(userId) // Pilih user tertentu
+            .collection("detailCost")
+            .doc('fixedDocument')
+            .update({
+          'barang': FieldValue.increment(cost),
+          'pendidikan': FieldValue.increment(0),
+          'travel': FieldValue.increment(0),
+        });
+      } else if (jenis == "Pendidikan") {
+        await FirebaseFirestore.instance
+            .collection("users") // Ambil koleksi users
+            .doc(userId) // Pilih user tertentu
+            .collection("detailCost")
+            .doc('fixedDocument')
+            .update({
+          'barang': FieldValue.increment(0),
+          'pendidikan': FieldValue.increment(cost),
+          'travel': FieldValue.increment(0),
+        });
+      } else if (jenis == "Travel") {
+        await FirebaseFirestore.instance
+            .collection("users") // Ambil koleksi users
+            .doc(userId) // Pilih user tertentu
+            .collection("detailCost")
+            .doc('fixedDocument')
+            .update({
+          'barang': FieldValue.increment(0),
+          'pendidikan': FieldValue.increment(0),
+          'travel': FieldValue.increment(cost),
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> updateCost(cost) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance.collection("users").doc(userId).update({

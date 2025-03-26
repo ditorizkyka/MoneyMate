@@ -15,6 +15,7 @@ class SignupView extends GetView<SignupController> {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController nameController = TextEditingController();
+    final TextEditingController limitController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -34,7 +35,7 @@ class SignupView extends GetView<SignupController> {
                 ),
                 Gap.h8,
                 Text(
-                  'Signup to your account',
+                  'Sign-Up to your account',
                   style: TypographyApp.text1,
                 ),
                 Gap.h24,
@@ -54,6 +55,33 @@ class SignupView extends GetView<SignupController> {
                   controller: passwordController,
                 ),
                 Gap.h12,
+                Container(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Spent Limit",
+                      ),
+                      Gap.h8,
+                      TextField(
+                        controller: limitController,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(16),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          hintText: "Rp. 70000",
+                          // labelText: "Masukan nama",
+                          prefixIcon: Icon(
+                            Icons.currency_exchange_outlined,
+                            color: ColorApp.mainColor,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Gap.h12,
                 Gap.h12,
                 ButtonApp(
                     action: "Sign-Up",
@@ -62,6 +90,9 @@ class SignupView extends GetView<SignupController> {
                         fullname: nameController.text,
                         email: emailController.text,
                         password: passwordController.text,
+                        limit: limitController.text == ""
+                            ? 0
+                            : int.parse(limitController.text),
                       );
                     }),
                 Gap.h12,
